@@ -107,17 +107,26 @@ impl FrontEnd {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("Send a query").clicked() {
-                    self.ws_sender.send(
-                        WsMessage::Text(serde_json::to_string(&MitiOut::new()).unwrap())
-                    );
+                    let m_out = MitiOut::new();
+                    self.ws_sender.send(WsMessage::Text(serde_json::to_string(&m_out).unwrap()));
                 }
             });
             ui.separator();
-            ui.heading("Received events:");
 
-            for event in &self.events {
-                ui.label(format!("{:?}", event));
-            }
+            ui.heading("Received events:");
+            ui.columns(4, |columns| {
+                columns[0].label("arrow");
+                columns[1].label("direction");
+                columns[2].label("datarate");
+                columns[3].label("text");
+                for event in &self.events {
+                    columns[0].label("<-");
+                    columns[1].label(event.direction.clone());
+                    columns[2].label(event.rate.to_string());
+                    columns[3].label(event.text.to_string());
+                    //ui.label(format!("<-{:?}", event));
+                }
+            });
         });
     }
 }
@@ -135,6 +144,7 @@ struct MitiIn {
 struct MitiOut {
     request: String,
     index: u16,
+    test: String,
 }
 
 impl MitiOut {
@@ -143,6 +153,7 @@ impl MitiOut {
         Self {
             request: "data".to_owned(),
             index: 12,
+            test: "Test".to_owned(),
         }
     }
 }
