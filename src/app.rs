@@ -23,7 +23,6 @@ impl eframe::App for ExampleApp {
     //La fonction update sert pour mettre a jour l'UI
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui_extras::install_image_loaders(ctx); //Ca pour installer le fait que l'on utilise des images
-        #[cfg(not(target_arch = "wasm32"))] //Est ce que l'on compile pour WASM (pour Web ?)
         {
             //Ici on retrouve un TopPannel, c'est un panneau que l'on greffe au top ou bottom de la page,
             //Ici ce Top Pannel on met une menu bar, avec une option File et le bouton Quit
@@ -163,11 +162,13 @@ impl InWindow {
 
     fn ui(&mut self, ctx: &egui::Context) {
         //on crée une nouvelle window et on y met les valeurs de la derniere query si elle existe
-        egui::Window::new("My Window").show(ctx, |ui| {
+        egui::Window::new("Printing Output").show(ctx, |ui| {
             match &self.m_in {
                 Some(msg_in) => {
                     ui.label(&msg_in.direction);
                     ui.label(&msg_in.rate.to_string());
+                    ui.label(&msg_in.text.to_string());
+                    ui.label(&msg_in.roaming.to_string());
                 }
                 None => {}
             }
@@ -185,6 +186,7 @@ struct MitiIn {
     direction: String,
     rate: u16,
     text: char,
+    roaming: bool,
 }
 
 //C'est ce que l'on envoit au serveur
