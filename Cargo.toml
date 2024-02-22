@@ -1,5 +1,5 @@
 [package]
-name = "miti_tracefront"
+name = "web_test"
 version = "0.1.0"
 authors = ["come"]
 edition = "2021"

@@ -2112,22 +2112,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "miti_tracefront"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui_extras",
- "env_logger",
- "ewebsock",
- "image",
- "log",
- "serde",
- "serde_json",
- "tokio",
- "wasm-bindgen-futures",
-]
-
-[[package]]
 name = "naga"
 version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3678,6 +3662,22 @@ checksum = "aa30049b1c872b72c89866d458eae9f20380ab280ffd1b1e18df2d3e2d98cfe0"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "web_test"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui_extras",
+ "env_logger",
+ "ewebsock",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio",
+ "wasm-bindgen-futures",
 ]
 
 [[package]]

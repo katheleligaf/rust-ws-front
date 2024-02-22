@@ -2,8 +2,8 @@ var cacheName = 'egui-template-pwa';
 var filesToCache = [
   './',
   './index.html',
-  './miti_tracefront.js',
-  './miti_tracefront_bg.wasm',
+  './web_test.js',
+  './web_test_bg.wasm',
 ];
 
 /* Start the service worker and cache all of the app's content */
