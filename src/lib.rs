@@ -1,4 +1,4 @@
 #![warn(clippy::all, rust_2018_idioms)]
 
-mod app;
-pub use app::ExampleApp;
+mod trace_app;
+pub use trace_app::TraceFront;

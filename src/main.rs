@@ -6,10 +6,10 @@
 fn main() -> eframe::Result<()> {
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
-    let app = web_test::ExampleApp::default();
+    let app = miti_tracefront::TraceFront::default();
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
-        "ewebsocket example app",
+        "Miti's TraceFront",
         native_options,
         Box::new(|_cc| Box::new(app))
     )
@@ -21,7 +21,7 @@ fn main() {
     eframe::WebLogger::init(log::LevelFilter::Debug).ok();
 
     let web_options = eframe::WebOptions::default();
-    let app = web_test::ExampleApp::default();
+    let app = miti_tracefront::ExampleApp::default();
 
     wasm_bindgen_futures::spawn_local(async {
         eframe::WebRunner
