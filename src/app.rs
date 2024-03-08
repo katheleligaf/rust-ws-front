@@ -1,5 +1,5 @@
-use eframe::egui::{ self };
-use ewebsock::{ WsEvent, WsMessage, WsReceiver, WsSender };
+use eframe::egui::{self};
+use ewebsock::{WsEvent, WsMessage, WsReceiver, WsSender};
 
 // ExempleApp c'est la Window entière, tout est dedans
 pub struct ExampleApp {
@@ -32,7 +32,8 @@ impl eframe::App for ExampleApp {
                     ui.menu_button("File", |ui| {
                         if ui.button("Quit").clicked() {
                             //Ici quand le Quit est cliqué
-                            ctx.send_viewport_cmd(egui::ViewportCommand::Close); //On ferme l'app
+                            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                            //On ferme l'app
                         }
                     });
                 });
@@ -120,7 +121,8 @@ impl FrontSocket {
                             //puis on l'ajoute au vec des evenements
                             self.events.push(resp);
                             //On met a jour la donnée dans la window
-                            self.in_window.update_in(self.events.last().unwrap().clone());
+                            self.in_window
+                                .update_in(self.events.last().unwrap().clone());
                         }
                         _ => {}
                     }
@@ -130,17 +132,20 @@ impl FrontSocket {
         }
         //Un autre toppanelavec une imagebutton
         egui::TopBottomPanel::top("topp_panel").show(ctx, |ui| {
-            if
-                ui
-                    .add(egui::ImageButton::new(egui::include_image!("../assets/right-arrow.png")))
-                    .clicked()
+            if ui
+                .add(egui::ImageButton::new(egui::include_image!(
+                    "../assets/right-arrow.png"
+                )))
+                .clicked()
             {
                 //Si il y a un click sur cette image button, on envoie un message de type MitiOut au serveur
                 let m_out = MitiOut::new();
-                self.ws_sender.send(WsMessage::Text(serde_json::to_string(&m_out).unwrap()));
+                self.ws_sender
+                    .send(WsMessage::Text(serde_json::to_string(&m_out).unwrap()));
             }
         });
-        self.in_window.ui(ctx);
+        self.in_window.ui_printing_output(ctx);
+        self.in_window.ui_load_direction(ctx);
     }
 }
 
@@ -150,9 +155,7 @@ struct InWindow {
 }
 impl Default for InWindow {
     fn default() -> Self {
-        Self {
-            m_in: None,
-        }
+        Self { m_in: None }
     }
 }
 impl InWindow {
@@ -160,19 +163,58 @@ impl InWindow {
         self.m_in = Some(msg_in);
     }
 
-    fn ui(&mut self, ctx: &egui::Context) {
+    fn ui_printing_output(&mut self, ctx: &egui::Context) {
         //on crée une nouvelle window et on y met les valeurs de la derniere query si elle existe
-        egui::Window::new("Printing Output").show(ctx, |ui| {
-            match &self.m_in {
-                Some(msg_in) => {
-                    ui.label(&msg_in.direction);
-                    ui.label(&msg_in.rate.to_string());
-                    ui.label(&msg_in.text.to_string());
-                    ui.label(&msg_in.roaming.to_string());
-                }
-                None => {}
+        egui::Window::new("Printing Output").show(ctx, |ui| match &self.m_in {
+            Some(msg_in) => {
+                ui.label(&msg_in.direction);
+                ui.label(&msg_in.rate.to_string());
+                ui.label(&msg_in.text.to_string());
+                ui.label(&msg_in.roaming.to_string());
             }
+            None => {}
         });
+    }
+
+    fn ui_load_direction(&mut self, ctx: &egui::Context) {
+        let upblack = egui::Image::new(egui::include_image!("../assets/uplink_black.png"))
+            .max_size(egui::Vec2::new(100.0, 100.0))
+            .maintain_aspect_ratio(true);
+        let downblack = egui::Image::new(egui::include_image!("../assets/downlink_black.png"))
+            .max_size(egui::Vec2::new(100.0, 100.0))
+            .maintain_aspect_ratio(true);
+        let downgreen = egui::Image::new(egui::include_image!("../assets/downlink_green.png"))
+            .max_size(egui::Vec2::new(100.0, 100.0))
+            .maintain_aspect_ratio(true);
+        let upblue = egui::Image::new(egui::include_image!("../assets/uplink_blue.png"))
+            .max_size(egui::Vec2::new(100.0, 100.0))
+            .maintain_aspect_ratio(true);
+
+        egui::Window::new("Direction Window").show(ctx, |ui| {
+            ui.horizontal_wrapped(|ui| {
+            match &self.m_in {           
+            Some(msg_in) => {
+                match msg_in.direction.as_str() {
+                    "upload" => {
+                        ui.add(upblue);
+                        ui.add(downblack);
+                    }
+                    "download" => {
+                        ui.add(upblack);
+                        ui.add(downgreen);
+                    }
+                    _ => {
+                        ui.add(upblack);
+                        ui.add(downblack);}
+                }
+            }
+            None => {
+                ui.add(upblack);
+                ui.add(downblack);
+            }
+        }
+    });
+    });
     }
 }
 
